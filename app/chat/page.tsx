@@ -23,6 +23,7 @@ function stripMarkdown(text: string): string {
 // welcome (0) | page-inputs (1) | intake chat (2) | generate (3)
 const TOTAL_STEPS = 4;
 const PASTE_CHAR_CAP = 30_000;
+const GATING_PAGE_URL = 'https://corzenhub.com/optimize-homepage-agent-try-it/';
 const SCREENSHOT_BYTE_CAP = 5 * 1024 * 1024;
 
 function NotionConnect({
@@ -257,16 +258,16 @@ function ChatContent() {
   // Session validation
   useEffect(() => {
     if (!sessionId) {
-      router.replace('/');
+      window.location.replace(GATING_PAGE_URL);
       return;
     }
     fetch(`/api/session?id=${encodeURIComponent(sessionId)}`)
       .then((res) => {
-        if (!res.ok) router.replace('/');
+        if (!res.ok) window.location.replace(GATING_PAGE_URL);
         else setValidated(true);
       })
-      .catch(() => router.replace('/'));
-  }, [sessionId, router]);
+      .catch(() => { window.location.replace(GATING_PAGE_URL); });
+  }, [sessionId]);
 
   // Auto-scroll chat
   useEffect(() => {
