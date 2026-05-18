@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 function corsHeaders() {
@@ -73,14 +74,16 @@ export async function POST(req: NextRequest) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (supabaseUrl && serviceKey) {
-      fetch(`${supabaseUrl}/functions/v1/beehiiv-homepage-demo-sync`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${serviceKey}`,
-        },
-        body: JSON.stringify({ record: { email: normalizedEmail, tag: 'Homepage audit demo' } }),
-      }).catch((err) => console.error('[session] beehiiv sync error:', err));
+      waitUntil(
+        fetch(`${supabaseUrl}/functions/v1/beehiiv-homepage-demo-sync`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ record: { email: normalizedEmail, tag: 'Homepage audit demo' } }),
+        }).catch((err) => console.error('[session] beehiiv sync error:', err))
+      );
     }
 
     return NextResponse.json({ sessionId: session.id }, { headers });
