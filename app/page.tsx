@@ -55,39 +55,39 @@ export default function EmailGate() {
             className="w-20 h-20 object-contain mx-auto mb-3"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
-          <p className="text-3xl font-bold text-corzen-navy">CorZen</p>
+          <p className="text-4xl font-bold text-corzen-navy">CorZen</p>
         </div>
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-slate-200 px-8 py-8">
 
-          <h1 className="text-xl font-bold text-corzen-navy text-center mb-1">
+          <h1 className="text-2xl font-bold text-corzen-navy text-center mb-1">
             Plan for success.
           </h1>
-          <p className="text-sm text-slate-500 text-center mb-6">
+          <p className="text-base text-slate-700 text-center mb-6">
             Homepage Audit — free demo
           </p>
 
-          <p className="text-sm text-slate-600 leading-relaxed text-center mb-6">
+          <p className="text-base text-slate-800 leading-relaxed text-center mb-6">
             Find what's losing you conversions in 60 seconds.<br />Get a 6-section weighted score, a headline rewrite, and your first 3 fixes.
           </p>
 
           {error === 'existing_email' ? (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-left">
-              <p className="font-semibold text-amber-900 mb-1">You&apos;ve already used this demo.</p>
-              <p className="text-amber-800 text-sm mb-4">
+              <p className="text-lg font-semibold text-amber-950 mb-1">You&apos;ve already used this demo.</p>
+              <p className="text-amber-950 text-base mb-4">
                 Your homepage audit is saved. Create a free CorZen account to access it, track fixes, and re-audit later.
                 You can use this same email to try our other free demos (LinkedIn Authority Builder and more).
               </p>
               <a
                 href="https://app.corzenhub.com/login"
-                className="inline-block bg-corzen-blue text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-corzen-blue-dark transition-colors"
+                className="inline-block bg-corzen-blue text-white font-semibold px-5 py-2.5 rounded-lg text-base hover:bg-corzen-blue-dark transition-colors"
               >
                 Create Your CorZen Account →
               </a>
               <button
                 onClick={() => { setError(null); setEmail(''); }}
-                className="block mt-3 text-sm text-amber-700 hover:underline"
+                className="block mt-3 text-base text-amber-900 hover:underline"
               >
                 Use a different email
               </button>
@@ -100,7 +100,7 @@ export default function EmailGate() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="w-full border border-slate-200 rounded-xl px-4 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-corzen-blue focus:border-transparent transition-all placeholder:text-slate-400"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3.5 text-lg focus:outline-none focus:ring-2 focus:ring-corzen-blue focus:border-transparent transition-all placeholder:text-slate-600"
               />
 
               <label className="flex items-start gap-3 cursor-pointer">
@@ -111,24 +111,24 @@ export default function EmailGate() {
                   required
                   className="mt-0.5 w-4 h-4 rounded border-slate-300 text-corzen-blue focus:ring-corzen-blue"
                 />
-                <span className="text-xs text-slate-500 leading-relaxed">
+                <span className="text-sm text-slate-700 leading-relaxed">
                   I agree to receive occasional updates from Zenly regarding CorZen.
                 </span>
               </label>
 
               {error && error !== 'existing_email' && (
-                <p className="text-red-600 text-sm">{error}</p>
+                <p className="text-red-800 text-base">{error}</p>
               )}
 
               <button
                 type="submit"
                 disabled={loading || !email || !optIn}
-                className="w-full bg-corzen-blue text-white font-semibold py-3.5 rounded-xl text-base hover:bg-corzen-blue-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-corzen-blue text-white font-semibold py-3.5 rounded-xl text-lg hover:bg-corzen-blue-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? 'Getting started…' : 'Audit My Homepage →'}
               </button>
 
-              <p className="text-xs text-slate-400 text-center">
+              <p className="text-sm text-slate-600 text-center">
                 One free audit per email — but the same email works on every CorZen demo.
               </p>
             </form>
