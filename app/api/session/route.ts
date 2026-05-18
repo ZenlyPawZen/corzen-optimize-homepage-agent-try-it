@@ -42,6 +42,25 @@ export async function POST(req: NextRequest) {
     const normalizedEmail = email.trim().toLowerCase();
     const supabase = getSupabaseAdmin();
 
+    // Fire the Beehiiv sync for every valid email, before any duplicate
+    // check, so the utm_source-driven automation in Beehiiv re-applies the
+    // demo's tag on repeat attempts. Beehiiv treats duplicate subscribes
+    // safely (reactivate_existing: true).
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (supabaseUrl && serviceKey) {
+      waitUntil(
+        fetch(`${supabaseUrl}/functions/v1/beehiiv-homepage-demo-sync`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ record: { email: normalizedEmail, tag: 'Homepage audit demo' } }),
+        }).catch((err) => console.error('[session] beehiiv sync error:', err))
+      );
+    }
+
     // Email uniqueness is per-table — same email can be used on other CorZen
     // agent demos (each has its own sessions table). Within this demo, the
     // UNIQUE(email) constraint enforces one audit per email.
@@ -69,21 +88,6 @@ export async function POST(req: NextRequest) {
     if (error || !session) {
       console.error('[session] insert error:', error);
       return NextResponse.json({ error: 'Failed to create session' }, { status: 500, headers });
-    }
-
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (supabaseUrl && serviceKey) {
-      waitUntil(
-        fetch(`${supabaseUrl}/functions/v1/beehiiv-homepage-demo-sync`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${serviceKey}`,
-          },
-          body: JSON.stringify({ record: { email: normalizedEmail, tag: 'Homepage audit demo' } }),
-        }).catch((err) => console.error('[session] beehiiv sync error:', err))
-      );
     }
 
     return NextResponse.json({ sessionId: session.id }, { headers });
