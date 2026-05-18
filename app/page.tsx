@@ -1,7 +1,140 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-const GATING_PAGE_URL = 'https://corzenhub.com/optimize-homepage-agent-try-it/';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Home() {
-  redirect(GATING_PAGE_URL);
+export default function EmailGate() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [optIn, setOptIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, emailOptIn: optIn }),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 409) {
+        setError('existing_email');
+        return;
+      }
+
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      sessionStorage.setItem('homepage_audit_session', data.sessionId);
+      router.push(`/chat?s=${data.sessionId}`);
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+
+        {/* Logo + CorZen name */}
+        <div className="text-center mb-6">
+          <img
+            src="/corzen_logo_grey.png"
+            alt="CorZen"
+            className="w-20 h-20 object-contain mx-auto mb-3"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          />
+          <p className="text-3xl font-bold text-corzen-navy">CorZen</p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-slate-200 px-8 py-8">
+
+          <h1 className="text-xl font-bold text-corzen-navy text-center mb-1">
+            Plan for success.
+          </h1>
+          <p className="text-sm text-slate-500 text-center mb-6">
+            Homepage Audit — free demo
+          </p>
+
+          <p className="text-sm text-slate-600 leading-relaxed text-center mb-6">
+            Find what's losing you conversions in 60 seconds.<br />Get a 6-section weighted score, a headline rewrite, and your first 3 fixes.
+          </p>
+
+          {error === 'existing_email' ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-left">
+              <p className="font-semibold text-amber-900 mb-1">You&apos;ve already used this demo.</p>
+              <p className="text-amber-800 text-sm mb-4">
+                Your homepage audit is saved. Create a free CorZen account to access it, track fixes, and re-audit later.
+                You can use this same email to try our other free demos (LinkedIn Authority Builder and more).
+              </p>
+              <a
+                href="https://app.corzenhub.com/login"
+                className="inline-block bg-corzen-blue text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-corzen-blue-dark transition-colors"
+              >
+                Create Your CorZen Account →
+              </a>
+              <button
+                onClick={() => { setError(null); setEmail(''); }}
+                className="block mt-3 text-sm text-amber-700 hover:underline"
+              >
+                Use a different email
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="w-full border border-slate-200 rounded-xl px-4 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-corzen-blue focus:border-transparent transition-all placeholder:text-slate-400"
+              />
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={optIn}
+                  onChange={(e) => setOptIn(e.target.checked)}
+                  required
+                  className="mt-0.5 w-4 h-4 rounded border-slate-300 text-corzen-blue focus:ring-corzen-blue"
+                />
+                <span className="text-xs text-slate-500 leading-relaxed">
+                  I agree to receive occasional updates from Zenly regarding CorZen.
+                </span>
+              </label>
+
+              {error && error !== 'existing_email' && (
+                <p className="text-red-600 text-sm">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading || !email || !optIn}
+                className="w-full bg-corzen-blue text-white font-semibold py-3.5 rounded-xl text-base hover:bg-corzen-blue-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? 'Getting started…' : 'Audit My Homepage →'}
+              </button>
+
+              <p className="text-xs text-slate-400 text-center">
+                One free audit per email — but the same email works on every CorZen demo.
+              </p>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
