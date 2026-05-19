@@ -44,7 +44,7 @@ export default function EmailGate() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#FAF5EE] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
 
         {/* Logo + CorZen name */}
