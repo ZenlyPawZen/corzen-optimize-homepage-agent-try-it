@@ -68,7 +68,7 @@ export default function EmailGate() {
             Homepage Audit — free demo
           </p>
 
-          <p className="text-base text-slate-800 leading-relaxed text-center mb-6">
+          <p className="text-base text-slate-800 leading-relaxed text-left mb-6">
             Find what's losing you conversions in 60 seconds.<br />Get a 6-section weighted score, a headline rewrite, and your first 3 fixes.
           </p>
 
