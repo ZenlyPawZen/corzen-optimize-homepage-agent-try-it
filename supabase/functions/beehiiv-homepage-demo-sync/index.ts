@@ -55,8 +55,25 @@ serve(async (req) => {
     }
 
     const subData = JSON.parse(subText);
+
+    // Enroll the subscriber in the homepage demo automation via the journeys API.
+    // utm_source on an existing subscriber is locked at acquisition, so the
+    // UTM-trigger version of the automation never re-fires on second-demo
+    // emails. The automation must have an "Add by API" trigger configured.
+    const HOMEPAGE_AUTOMATION_ID = 'aut_18294f4d-e18e-4176-bddf-ca586372f141';
+    const journeyRes = await fetch(
+      `https://api.beehiiv.com/v2/publications/${BEEHIIV_PUB_ID}/automations/${HOMEPAGE_AUTOMATION_ID}/journeys`,
+      { method: 'POST', headers, body: JSON.stringify({ email }) }
+    );
+    const journeyText = await journeyRes.text();
+    console.log('[beehiiv] journey status:', journeyRes.status, 'body:', journeyText);
+
     return new Response(
-      JSON.stringify({ status: 'synced', subscriberId: subData?.data?.id }),
+      JSON.stringify({
+        status: 'synced',
+        subscriberId: subData?.data?.id,
+        journeyStatus: journeyRes.status,
+      }),
       { headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error: any) {
