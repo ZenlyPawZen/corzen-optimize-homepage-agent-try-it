@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Zap, Heart } from 'lucide-react';
 
 export default function EmailGate() {
   const router = useRouter();
@@ -133,6 +134,18 @@ export default function EmailGate() {
               </p>
             </form>
           )}
+        </div>
+
+        {/* Trust bar */}
+        <div className="flex items-center justify-center gap-8 mt-6 text-sm text-green-700">
+          <div className="flex items-center gap-1.5">
+            <Zap className="w-4 h-4 fill-current" />
+            <span>Results in 60s</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Heart className="w-4 h-4" />
+            <span>14,200+ audits run</span>
+          </div>
         </div>
       </div>
     </div>
