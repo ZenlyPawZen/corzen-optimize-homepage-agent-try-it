@@ -45,7 +45,7 @@ export default function EmailGate() {
 
   return (
     <div className="min-h-screen bg-[#FAF5EE] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-xl">
 
         {/* Logo + CorZen name */}
         <div className="text-center mb-6">
@@ -129,7 +129,7 @@ export default function EmailGate() {
               </button>
 
               <p className="text-sm text-slate-600 text-center">
-                One free audit per email. You can demo each agent once per email.
+                You can demo each agent once per email.
               </p>
             </form>
           )}
