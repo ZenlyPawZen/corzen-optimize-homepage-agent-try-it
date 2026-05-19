@@ -66,7 +66,7 @@ export default function EmailGate() {
             Plan for success.
           </h1>
           <p className="text-base text-slate-700 text-center mb-6">
-            Homepage Audit — free demo
+            Homepage Audit • Free demo
           </p>
 
           <p className="text-base text-slate-800 leading-relaxed text-left mb-6">
