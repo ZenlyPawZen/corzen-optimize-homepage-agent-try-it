@@ -129,7 +129,7 @@ export default function EmailGate() {
               </button>
 
               <p className="text-sm text-slate-600 text-center">
-                One free audit per email — but the same email works on every CorZen demo.
+                One free audit per email. You can demo each agent once per email.
               </p>
             </form>
           )}
