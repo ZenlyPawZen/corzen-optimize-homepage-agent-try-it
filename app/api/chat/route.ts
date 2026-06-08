@@ -32,14 +32,14 @@ function buildGreeting(session: {
 
   const ackText =
     ack.length === 0
-      ? "I don't see a URL, screenshot, or pasted copy yet — but"
+      ? "I don't see a URL, screenshot, or pasted copy yet, but"
       : ack.length === 1
-      ? `Got it — I have ${ack[0]}.`
-      : `Got it — I have ${ack.slice(0, -1).join(', ')} and ${ack[ack.length - 1]}.`;
+      ? `Got it. I have ${ack[0]}.`
+      : `Got it. I have ${ack.slice(0, -1).join(', ')} and ${ack[ack.length - 1]}.`;
 
   return `${ackText} To run a useful audit I need three quick things from you.
 
-First — what kind of business is this? Software (SaaS), a service business (agency, consulting, freelance), or e-commerce?`;
+First, what kind of business is this? Software (SaaS), a service business (agency, consulting, freelance), or e-commerce?`;
 }
 
 export async function POST(req: NextRequest) {
