@@ -15,9 +15,9 @@ type HeadlineRewrite = {
 };
 
 function extractBlock(section: string, label: string): string | undefined {
-  // Match **Label:** then capture until the next **Label:** marker or end.
+  // Subsections are "#### Label" headings; capture until the next "####" or end.
   const pattern = new RegExp(
-    `\\*\\*${label}:?\\*\\*\\s*([\\s\\S]*?)(?=\\n\\s*\\*\\*[A-Z][A-Za-z ]+:?\\*\\*|$)`,
+    `####\\s*${label}:?\\s*\\n([\\s\\S]*?)(?=\\n####|$)`,
     'i'
   );
   const match = section.match(pattern);
@@ -31,6 +31,7 @@ function stripQuoteMarkers(text: string | undefined): string | undefined {
     .split('\n')
     .map((line) => line.replace(/^>\s?/, '').trim())
     .filter(Boolean)
+    .filter((line) => !/^-{3,}$/.test(line)) // drop trailing markdown hr (---)
     .join(' ')
     .replace(/^["""']+|["""']+$/g, '')
     .trim();
@@ -38,7 +39,7 @@ function stripQuoteMarkers(text: string | undefined): string | undefined {
 
 function extractHeadlineRewrite(report: string): HeadlineRewrite | null {
   const sectionMatch = report.match(
-    /###\s*Headline Rewrite[^\n]*\n([\s\S]*?)(?=\n###|\n##|$)/i
+    /###\s*Headline Rewrite[^\n]*\n([\s\S]*?)(?=\n#{2,3}(?!#)|$)/i
   );
   if (!sectionMatch) return null;
   const section = sectionMatch[1];
@@ -57,7 +58,7 @@ function extractHeadlineRewrite(report: string): HeadlineRewrite | null {
 // Strip the Headline Rewrite section out of the markdown so it doesn't render twice.
 function stripHeadlineRewriteSection(report: string): string {
   return report.replace(
-    /(\n|^)###\s*Headline Rewrite[^\n]*\n[\s\S]*?(?=\n###|\n##|$)/i,
+    /(\n|^)###\s*Headline Rewrite[^\n]*\n[\s\S]*?(?=\n#{2,3}(?!#)|$)/i,
     '\n'
   );
 }
