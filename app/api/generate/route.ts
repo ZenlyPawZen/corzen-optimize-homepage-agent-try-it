@@ -15,6 +15,17 @@ const SCREENSHOT_BUCKET = 'homepage-audit-screenshots';
 const FETCH_TIMEOUT_MS = 10_000;
 const FETCHED_TEXT_CAP = 30_000;
 
+// Belt-and-suspenders enforcement of the em dash ban. The prompt instructs
+// the model never to use em dashes, but LLMs occasionally slip; this strips
+// any that survive before the report is stored. Em dashes (—) become commas;
+// en dashes (–) are left alone since they are used for numeric ranges (1–5).
+function sanitizeReportCopy(text: string): string {
+  return text
+    .replace(/\s*—\s*/g, ', ') // em dash → comma, collapsing surrounding spaces
+    .replace(/,\s*,/g, ', ')    // collapse any double commas the swap created
+    .replace(/[ \t]+,/g, ',');  // no space before a comma
+}
+
 function stripHtmlToText(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
@@ -176,7 +187,10 @@ export async function POST(req: NextRequest) {
 
           await supabase
             .from('homepage_audit_sessions')
-            .update({ report_content: fullText, updated_at: new Date().toISOString() })
+            .update({
+              report_content: sanitizeReportCopy(fullText),
+              updated_at: new Date().toISOString(),
+            })
             .eq('id', sessionId);
 
           controller.enqueue(encoder.encode('\n\n[REPORT_SAVED]'));

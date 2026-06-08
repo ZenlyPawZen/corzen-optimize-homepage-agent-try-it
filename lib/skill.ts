@@ -157,6 +157,7 @@ Rewrite any AI-sounding language to be natural and direct. Specifically:
 - No vague attributions like "Experts argue" or "Studies show"
 - Write as if you're a sharp colleague speaking directly to the person, not generating a report
 - Short sentences. Active voice. Specific over general.
+- Never use the negation-antithesis construction "It's not X, it's Y" or any variant of it. This includes "This isn't about X, it's about Y", "Not X. Y.", "X isn't just Y, it's Z", "It's less about X and more about Y", and "don't think of it as X, think of it as Y". State the point directly and positively. Instead of "It's not a feature, it's a philosophy", write "This is a philosophy." This applies to all prose and to every piece of recommended copy, including headline rewrites.
 
 ## Style and grammar
 - Em dashes: never use the em dash character (—). Use a comma, period, colon, parentheses, or two separate sentences instead. This is absolute and applies to all prose and to every piece of recommended copy, including every headline rewrite (current, rewritten, alternate).
