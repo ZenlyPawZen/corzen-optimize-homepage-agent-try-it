@@ -841,15 +841,25 @@ function ChatContent() {
                 )}
 
                 {showNotion && !voiceImported && (
-                  <div className="w-full border border-gray-200 rounded-xl p-4 text-left">
-                    <NotionConnect
-                      sessionId={sessionId}
-                      onImported={(pages) => {
-                        setVoiceImported(pages);
-                        setShowNotion(false);
-                      }}
-                      onImportingChange={setNotionImporting}
-                    />
+                  <div className="w-full space-y-3">
+                    <div className="border border-gray-200 rounded-xl p-4 text-left">
+                      <NotionConnect
+                        sessionId={sessionId}
+                        onImported={(pages) => {
+                          setVoiceImported(pages);
+                          setShowNotion(false);
+                        }}
+                        onImportingChange={setNotionImporting}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <button
+                        onClick={handleGenerate}
+                        className="text-sm text-gray-400 hover:text-gray-600 hover:underline transition-colors"
+                      >
+                        Skip this step →
+                      </button>
+                    </div>
                   </div>
                 )}
 
