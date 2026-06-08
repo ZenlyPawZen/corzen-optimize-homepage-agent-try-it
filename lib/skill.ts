@@ -186,8 +186,14 @@ Phase 5, priority matrix. Map every identified fix to the impact × effort matri
 
 Phase 6, self-critique. Flag any scoring gaps (sections that couldn't be fully assessed because of missing inputs, e.g. URL fetch failed, no screenshot), verify that headline rewrites are specific rather than still-vague, and note anything requiring human verification (load speed, mobile rendering).`;
 
-export function buildGenerationSystemPrompt(brandVoiceContext?: string | null): string {
+export function buildGenerationSystemPrompt(
+  brandVoiceContext?: string | null,
+  generatedDate?: string
+): string {
+  const today = generatedDate ?? new Date().toISOString().slice(0, 10);
   let prompt = `You are a conversion expert auditing a homepage or landing page. Produce a complete homepage audit following the phases below exactly.
+
+Today's date is ${today}. Use this exact date wherever the audit shows a date. Never use any other date.
 
 ${SKILL_CONTENT}
 
@@ -197,7 +203,7 @@ Be concise throughout. Every section should be scannable in under 30 seconds: sh
 
 Output format. Use this exact markdown structure:
 
-## Homepage audit, [domain or page name] | [YYYY-MM-DD]
+## Homepage audit, [domain or page name] | ${today}
 Page type: [SaaS / service / e-commerce]
 Target conversion: [what the page should do]
 
