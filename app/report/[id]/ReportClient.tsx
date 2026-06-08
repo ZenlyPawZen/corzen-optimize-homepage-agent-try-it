@@ -166,8 +166,32 @@ export default function ReportClient({
     day: 'numeric',
   });
 
+  const dateTime = new Date(createdAt).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Per-page PDF header — hidden on screen, fixed on every printed page */}
+      <div className="print-page-header">
+        <div style={{ maxWidth: 768, margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 10 }}>
+            <img
+              src="/corzen_logo_grey.png"
+              alt="CorZen"
+              style={{ width: 20, height: 20, objectFit: 'contain' }}
+            />
+            <span style={{ fontWeight: 700, fontSize: 15, color: '#111827' }}>CorZen</span>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: 0 }} />
+        </div>
+      </div>
+
       {/* Header */}
       <header className="no-print border-b border-slate-100 px-6 py-4 sticky top-0 bg-white z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -209,13 +233,6 @@ export default function ReportClient({
       {/* Report content */}
       <main className="print-content px-6 py-10">
         <div className="max-w-3xl mx-auto">
-          <div className="hidden print:flex items-center gap-2 mb-8 pb-4 border-b border-slate-200">
-            <span className="text-lg font-bold text-slate-900">CorZen</span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-500 text-sm">Homepage Audit</span>
-            <span className="ml-auto text-xs text-slate-400">{date}</span>
-          </div>
-
           <div className="mb-2">
             <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#111827' }}>
               Homepage Audit Report
@@ -274,6 +291,20 @@ export default function ReportClient({
           {headlineRewrite && <HeadlineRewriteCard data={headlineRewrite} />}
         </div>
       </main>
+
+      {/* Per-page PDF footer — hidden on screen, fixed on every printed page */}
+      <div className="print-page-footer">
+        <div style={{ maxWidth: 768, margin: '0 auto' }}>
+          <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0 0 8px 0' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ flex: 1 }} />
+            <span style={{ color: '#6B7280', fontSize: 11 }}>Generated on {dateTime}</span>
+            <span style={{ flex: 1, textAlign: 'right', color: '#6B7280', fontSize: 11 }}>
+              corzenhub.com
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* CTA */}
       <aside
