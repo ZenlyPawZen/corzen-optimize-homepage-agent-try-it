@@ -45,9 +45,15 @@
 .report-prose strong { @apply font-semibold text-slate-900; }
 .report-prose hr { @apply border-slate-200 my-6; }
 
-/* Hidden on screen; @media print turns them on */
-.print-page-header,
-.print-page-footer { display: none; }
+/* Print header/footer live in a <thead>/<tfoot> so the browser reserves
+   space for them on every printed page (no content overlap). On screen the
+   shell renders as plain blocks and the header/footer are hidden. */
+.print-shell,
+.print-shell > tbody,
+.print-shell > tbody > tr,
+.print-shell > tbody > tr > td { display: block; }
+.print-shell-head,
+.print-shell-foot { display: none; }
 
 /* Print styles — hides all UI chrome, shows only the report content */
 @media print {
@@ -57,34 +63,18 @@
   .no-print { display: none !important; }
   .print-content {
     display: block !important;
-    padding: 80px 0 72px !important;
+    padding: 0 !important;
     margin: 0 !important;
   }
   body { background: white !important; }
   .report-prose h2 { break-before: auto; }
   .report-prose table { break-inside: avoid; }
 
-  /* Per-page header — fixed to top of every printed page */
-  .print-page-header {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 14px 0 0;
-    z-index: 1000;
-  }
-
-  /* Per-page footer — fixed to bottom of every printed page */
-  .print-page-footer {
-    display: block;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 0 0 12px;
-    z-index: 1000;
-  }
+  /* Restore table semantics so thead/tfoot repeat on every page */
+  .print-shell { display: table; width: 100%; }
+  .print-shell > tbody { display: table-row-group; }
+  .print-shell > tbody > tr { display: table-row; }
+  .print-shell > tbody > tr > td { display: table-cell; }
+  .print-shell-head { display: table-header-group; }
+  .print-shell-foot { display: table-footer-group; }
 }

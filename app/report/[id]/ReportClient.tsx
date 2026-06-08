@@ -177,21 +177,6 @@ export default function ReportClient({
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Per-page PDF header — hidden on screen, fixed on every printed page */}
-      <div className="print-page-header">
-        <div style={{ maxWidth: 768, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 10 }}>
-            <img
-              src="/corzen_logo_grey.png"
-              alt="CorZen"
-              style={{ width: 20, height: 20, objectFit: 'contain' }}
-            />
-            <span style={{ fontWeight: 700, fontSize: 15, color: '#111827' }}>CorZen</span>
-          </div>
-          <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: 0 }} />
-        </div>
-      </div>
-
       {/* Header */}
       <header className="no-print border-b border-slate-100 px-6 py-4 sticky top-0 bg-white z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -230,81 +215,107 @@ export default function ReportClient({
         </div>
       </header>
 
-      {/* Report content */}
+      {/* Report content — print header/footer live in thead/tfoot so the
+          browser repeats them on every printed page with proper spacing */}
       <main className="print-content px-6 py-10">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-2">
-            <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#111827' }}>
-              Homepage Audit Report
-            </h1>
-            {homepageUrl && (
-              <p className="text-sm mt-1" style={{ color: '#4B5563' }}>
-                <a
-                  href={homepageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                  style={{ color: '#1B56D6' }}
-                >
-                  {homepageUrl}
-                </a>
-              </p>
-            )}
-          </div>
+        <table className="print-shell max-w-3xl mx-auto">
+          {/* Per-page PDF header */}
+          <thead className="print-shell-head">
+            <tr>
+              <td style={{ paddingTop: 24, paddingBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 10 }}>
+                  <img
+                    src="/corzen_logo_grey.png"
+                    alt="CorZen"
+                    style={{ width: 20, height: 20, objectFit: 'contain' }}
+                  />
+                  <span style={{ fontWeight: 700, fontSize: 15, color: '#111827' }}>CorZen</span>
+                </div>
+                <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: 0 }} />
+              </td>
+            </tr>
+          </thead>
 
-          <div className="report-prose">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h2: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-3 border-b border-slate-100 pb-2">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-lg font-semibold text-corzen-purple mt-6 mb-2">{children}</h3>
-                ),
-                table: ({ children }) => (
-                  <div className="overflow-x-auto mb-6">
-                    <table className="w-full border-collapse text-sm">{children}</table>
-                  </div>
-                ),
-                th: ({ children }) => (
-                  <th className="bg-corzen-purple-light text-corzen-purple font-semibold text-left px-3 py-2 border border-slate-200">
-                    {children}
-                  </th>
-                ),
-                td: ({ children }) => (
-                  <td className="px-3 py-2 border border-slate-200 text-slate-700 align-top">{children}</td>
-                ),
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-corzen-purple pl-4 italic text-slate-600 my-4">
-                    {children}
-                  </blockquote>
-                ),
-              }}
-            >
-              {reportWithoutHeadline}
-            </ReactMarkdown>
-          </div>
+          {/* Per-page PDF footer */}
+          <tfoot className="print-shell-foot">
+            <tr>
+              <td style={{ paddingTop: 16, paddingBottom: 24 }}>
+                <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0 0 8px 0' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ flex: 1 }} />
+                  <span style={{ color: '#6B7280', fontSize: 11 }}>Generated on {dateTime}</span>
+                  <span style={{ flex: 1, textAlign: 'right', color: '#6B7280', fontSize: 11 }}>
+                    corzenhub.com
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
 
-          {headlineRewrite && <HeadlineRewriteCard data={headlineRewrite} />}
-        </div>
+          <tbody>
+            <tr>
+              <td>
+                <div className="mb-2">
+                  <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#111827' }}>
+                    Homepage Audit Report
+                  </h1>
+                  {homepageUrl && (
+                    <p className="text-sm mt-1" style={{ color: '#4B5563' }}>
+                      <a
+                        href={homepageUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                        style={{ color: '#1B56D6' }}
+                      >
+                        {homepageUrl}
+                      </a>
+                    </p>
+                  )}
+                </div>
+
+                <div className="report-prose">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h2: ({ children }) => (
+                        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-3 border-b border-slate-100 pb-2">
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-lg font-semibold text-corzen-purple mt-6 mb-2">{children}</h3>
+                      ),
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto mb-6">
+                          <table className="w-full border-collapse text-sm">{children}</table>
+                        </div>
+                      ),
+                      th: ({ children }) => (
+                        <th className="bg-corzen-purple-light text-corzen-purple font-semibold text-left px-3 py-2 border border-slate-200">
+                          {children}
+                        </th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="px-3 py-2 border border-slate-200 text-slate-700 align-top">{children}</td>
+                      ),
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-corzen-purple pl-4 italic text-slate-600 my-4">
+                          {children}
+                        </blockquote>
+                      ),
+                    }}
+                  >
+                    {reportWithoutHeadline}
+                  </ReactMarkdown>
+                </div>
+
+                {headlineRewrite && <HeadlineRewriteCard data={headlineRewrite} />}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </main>
-
-      {/* Per-page PDF footer — hidden on screen, fixed on every printed page */}
-      <div className="print-page-footer">
-        <div style={{ maxWidth: 768, margin: '0 auto' }}>
-          <hr style={{ border: 'none', borderTop: '1px solid #E2E8F0', margin: '0 0 8px 0' }} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ flex: 1 }} />
-            <span style={{ color: '#6B7280', fontSize: 11 }}>Generated on {dateTime}</span>
-            <span style={{ flex: 1, textAlign: 'right', color: '#6B7280', fontSize: 11 }}>
-              corzenhub.com
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* CTA */}
       <aside
